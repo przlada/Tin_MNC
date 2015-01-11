@@ -50,22 +50,24 @@ public class MNCMcastTest implements Runnable{
 
     @Override
     public void run() {
-        byte data[] = name.getBytes();
-        DatagramPacket packet = null;
-        try {
-            packet = new DatagramPacket(data, data.length, MNCConsts.MULTICAST_ADDR.getJavaAddress(), MNCConsts.MCAST_PORT);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        try {
-            udpClient.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while(true) {
+            byte data[] = name.getBytes();
+            DatagramPacket packet = null;
+            try {
+                packet = new DatagramPacket(data, data.length, MNCConsts.MULTICAST_ADDR.getJavaAddress(), MNCConsts.MCAST_PORT);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            try {
+                udpClient.send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -92,7 +94,8 @@ public class MNCMcastTest implements Runnable{
                 try {
                     udpListener.receive(packet);
                     received.add(new String(packet.getData()));
-                    Runtime.getRuntime().exec("clear");
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     int i = 1;
                     for(String address: received){
                         System.out.println(i+".: "+address);
