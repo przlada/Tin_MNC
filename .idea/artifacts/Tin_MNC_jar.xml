@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Tin_MNC:jar">
+    <output-path>$PROJECT_DIR$/src/jar</output-path>
+    <root id="archive" name="Tin_MNC.jar">
+      <element id="module-output" name="Tin_MNC" />
+    </root>
+  </artifact>
+</component>
