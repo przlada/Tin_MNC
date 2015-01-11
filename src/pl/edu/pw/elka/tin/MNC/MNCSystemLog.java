@@ -1,14 +1,21 @@
 package pl.edu.pw.elka.tin.MNC;
 
+import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
 import pl.edu.pw.elka.tin.MNC.MNCController.MNCDevice;
+import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCControlEvent;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCToken;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.Date;
 
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.Langs;
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.getLangText;
+import static pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCControlEvent.TYPE;
 
 /**
  * Klasa odpowiedzialna za odbieranie i wyświetlanie wszelkich zdarzeń.
@@ -18,9 +25,11 @@ public class MNCSystemLog {
     private Langs lang;
     private String controllerName = null;
     private MNCDevice device;
+    private MNCGuiMenagerCommunication guiManager;
 
     public MNCSystemLog(Langs l){
         setLang(l);
+        guiManager = new MNCGuiMenagerCommunication();
     }
 
     public void setDevice(MNCDevice dev){
@@ -63,6 +72,7 @@ public class MNCSystemLog {
 
     public void actionReceiveDatagram(MNCDatagram datagram){
         print(getLangText(lang,"ReceiveFromMulticast")+datagram);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromMulticast, getLangText(lang,"ReceiveFromMulticast")+datagram));
     }
 
     public void actionAddedNewDevice(String group, MNCAddress address){
@@ -111,5 +121,28 @@ public class MNCSystemLog {
 
     public void actionRemoveDeviceFromTokenList(MNCAddress address){
         print(getLangText(lang,"RemoveDeviceFromTokenList")+address);
+    }
+
+    private class MNCGuiMenagerCommunication{
+        private Socket socket;
+        private ObjectOutputStream out;
+        private ObjectInputStream in;
+
+        public MNCGuiMenagerCommunication(){
+            try {
+                socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
+                out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public synchronized void sendToManager(MNCControlEvent data){
+            try {
+                out.writeObject(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

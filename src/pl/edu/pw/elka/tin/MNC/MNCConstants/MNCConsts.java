@@ -16,6 +16,9 @@ public interface MNCConsts {
     public static final int MCAST_PORT = 4446;
     public static final int UCAST_PORT = 4446;
 
+    public static final int GUI_MANAGER_PORT = 9000;
+    public static final String GUI_MANAGER_HOST = "10.0.3.2";
+
     public static final int MAX_UDP_PACKET_SIZE = 1400;
     public static final String DEFAULT_INTERFACE_NAME = "eth0";
 
