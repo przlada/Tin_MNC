@@ -134,7 +134,7 @@ public class MNCSystemLog {
             try {
                 socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
                 out = new ObjectOutputStream(socket.getOutputStream());
-                //in = new ObjectInputStream(socket.getInputStream());
+                in = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
