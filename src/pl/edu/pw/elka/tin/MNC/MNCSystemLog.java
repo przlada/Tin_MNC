@@ -72,8 +72,8 @@ public class MNCSystemLog {
 
     public void actionReceiveDatagram(MNCDatagram datagram){
         print(getLangText(lang,"ReceiveFromMulticast")+datagram);
-        //guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromMulticast, getLangText(lang,"ReceiveFromMulticast")+datagram));
-        guiManager.sendToManager(getLangText(lang,"ReceiveFromMulticast")+datagram);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromMulticast, getLangText(lang,"ReceiveFromMulticast")+datagram));
+        //guiManager.sendToManager(getLangText(lang,"ReceiveFromMulticast")+datagram);
     }
 
     public void actionAddedNewDevice(String group, MNCAddress address){
@@ -94,7 +94,7 @@ public class MNCSystemLog {
 
     public void actionSendDatagram(MNCDatagram datagram){
         print(getLangText(lang,"SendByMulticast")+datagram);
-        guiManager.sendToManager(getLangText(lang,"SendByMulticast")+datagram);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromMulticast, getLangText(lang,"SendByMulticast")+datagram));
     }
 
     public void dataConsumption(MNCDeviceParameterSet set){
@@ -139,7 +139,7 @@ public class MNCSystemLog {
                 e.printStackTrace();
             }
         }
-        public synchronized void sendToManager(String data){
+        public synchronized void sendToManager(MNCControlEvent data){
             try {
                 out.writeObject(data);
             } catch (IOException e) {
