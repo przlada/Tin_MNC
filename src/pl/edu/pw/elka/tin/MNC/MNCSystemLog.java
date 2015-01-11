@@ -134,10 +134,10 @@ public class MNCSystemLog {
             try {
                 socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
                 out = new ObjectOutputStream(socket.getOutputStream());
-                in = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            new Thread(new ReceiveFromManager()).start();
         }
         public synchronized void sendToManager(MNCControlEvent data){
             try {
@@ -146,5 +146,29 @@ public class MNCSystemLog {
                 e.printStackTrace();
             }
         }
+
+        private class ReceiveFromManager implements Runnable{
+
+            @Override
+            public void run() {
+                try {
+                    in = new ObjectInputStream(socket.getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                while(true){
+                    try {
+                        MNCControlEvent mncControlEvent = (MNCControlEvent) in.readObject();
+                        System.out.println((String)mncControlEvent.data);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+
     }
 }
