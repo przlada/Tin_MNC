@@ -37,7 +37,7 @@ public abstract class MNCDevice implements Serializable{
         this.name = name;
         this.log = log;
         myAddress = addr;
-        log.setDevice(this);
+        //log.setDevice(this);
         tokensOwners = new Hashtable<String, MNCAddress>();
         myGroups = new HashSet<String>();
         udpClient = new DatagramSocket();
@@ -141,6 +141,6 @@ public abstract class MNCDevice implements Serializable{
     }
     protected abstract void checkTokenOwners();
 
-    //public abstract void closeDevice();
+    public abstract void closeDevice();
 
 }

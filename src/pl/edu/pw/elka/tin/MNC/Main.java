@@ -10,14 +10,55 @@ import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Scanner;
 
 
 public class Main {
 
-    public static void main(String[] args) throws SocketException{
+    public static void main(String[] args) {
+        if(args.length >= 2){
+            String command;
+            Scanner in = new Scanner(System.in);
+            MNCSystemLog log = new MNCSystemLog(MNCDict.Langs.PL);
+            MNCAddress.TYPE deviceType;
+            if(args[0].equals("C"))
+                deviceType = MNCAddress.TYPE.CONTROLLER;
+            else
+                deviceType = MNCAddress.TYPE.MONITOR;
+
+            while(true){
+                command = in.nextLine();
+                if(command.equals("token")){
+                    command = in.nextLine();
+                    System.out.println(((MNCController) log.getDevice()).getToken(command));
+                }
+                else if(command.equals("tcp")){
+                    command = in.nextLine();
+                    MNCDeviceParameterSet paramSet = new MNCDeviceParameterSet(command);
+                    paramSet.populateSet();
+                    ((MNCController) log.getDevice()).sendParameterSet(paramSet);
+                }
+                else if(command.equals("transfer")){
+                    command = in.nextLine();
+                    ((MNCController) log.getDevice()).transferToken(command);
+                }
+                else if(command.equals("quit") || command.equals("q")){
+                    log.stopDevice();
+                    break;
+                }
+                else if(command.equals("stop")){
+                    log.stopDevice();
+                }
+                else if(command.equals("start")){
+                    log.startNewDevice(deviceType);
+                    for (int i = 1; i < args.length; i++)
+                        log.getDevice().addGroup(args[i]);
+
+                }
+            }
+        }
+        /*
         NetworkInterface netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
         Enumeration addresses = netint.getInetAddresses();
         InetAddress inetAddress = null;
@@ -69,7 +110,8 @@ public class Main {
                     }
                     else if(command.equals("quit") || command.equals("q")){
                         ((MNCController) device).closeDevice();
-                        log.stopWorking();
+                        device = null;
+                        //log.stopWorking();
                         break;
                     }
                 }
@@ -78,5 +120,7 @@ public class Main {
             e.printStackTrace();
         }
         in.close();
+        */
+
     }
 }

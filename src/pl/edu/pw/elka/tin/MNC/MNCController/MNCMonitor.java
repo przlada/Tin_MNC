@@ -74,4 +74,8 @@ public class MNCMonitor extends MNCDevice {
             }
         }
     }
+
+    public synchronized void closeDevice() {
+
+    }
 }

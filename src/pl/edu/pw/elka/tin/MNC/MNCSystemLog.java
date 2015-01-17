@@ -1,6 +1,7 @@
 package pl.edu.pw.elka.tin.MNC;
 
 import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
+import pl.edu.pw.elka.tin.MNC.MNCController.MNCController;
 import pl.edu.pw.elka.tin.MNC.MNCController.MNCDevice;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCControlEvent;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
@@ -10,9 +11,9 @@ import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCToken;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
 import java.util.Date;
+import java.util.Enumeration;
 
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.Langs;
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.getLangText;
@@ -27,12 +28,62 @@ public class MNCSystemLog {
     private String controllerName = null;
     private MNCDevice device;
     private MNCGuiMenagerCommunication guiManager;
+    private MNCAddress.TYPE deviceType;
 
     public MNCSystemLog(Langs l){
         setLang(l);
         guiManager = new MNCGuiMenagerCommunication();
     }
 
+    public static String getLocalAddress(){
+        NetworkInterface netint = null;
+        try {
+            netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
+            Enumeration addresses = netint.getInetAddresses();
+            InetAddress inetAddress = null;
+            while (addresses.hasMoreElements()) {
+                InetAddress addr = (InetAddress)addresses.nextElement();
+                if(addr instanceof Inet6Address)
+                    if(!addr.isLinkLocalAddress()){
+                        inetAddress = addr;
+                        break;
+                    }
+            }
+            if(inetAddress == null){
+                inetAddress = netint.getInterfaceAddresses().get(0).getAddress();
+            }
+            return inetAddress.getHostAddress();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public void startNewDevice(MNCAddress.TYPE type){
+        if(device == null){
+            deviceType = type;
+            try {
+                device = new MNCController(deviceType.toString(), new MNCAddress(getLocalAddress(), deviceType), this);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void stopDevice(){
+        if(device != null){
+            device.closeDevice();
+            device = null;
+        }
+    }
+
+    public MNCDevice getDevice(){
+        return device;
+    }
+
+    /*
     public void setDevice(MNCDevice dev){
         device = dev;
         if(dev != null)
@@ -41,6 +92,7 @@ public class MNCSystemLog {
             controllerName = getLangText(lang, "NoNameController");
         print(getLangText(lang,"ControllerStarted") + controllerName);
     }
+    */
 
     public synchronized Langs getLang(){
         return lang;

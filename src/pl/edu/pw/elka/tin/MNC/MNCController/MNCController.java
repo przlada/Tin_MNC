@@ -190,7 +190,7 @@ public class MNCController extends MNCDevice {
         }
     }
 
-    //@Override
+    @Override
     public synchronized void closeDevice() {
         for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
             getter.setRunning(false);
