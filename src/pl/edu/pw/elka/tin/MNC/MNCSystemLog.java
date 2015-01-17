@@ -61,9 +61,10 @@ public class MNCSystemLog {
 
     public void startNewDevice(MNCAddress.TYPE type){
         if(device == null){
+            controllerName = getLocalAddress();
             deviceType = type;
             try {
-                device = new MNCController(deviceType.toString(), new MNCAddress(getLocalAddress(), deviceType), this);
+                device = new MNCController(deviceType.toString(), new MNCAddress(controllerName, deviceType), this);
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {
