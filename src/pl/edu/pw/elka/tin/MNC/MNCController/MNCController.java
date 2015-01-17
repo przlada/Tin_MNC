@@ -205,6 +205,19 @@ public class MNCController extends MNCDevice {
         unicastReceiver.stopRunning();
         System.out.println("czekam na zkonczenie watkow");
         try {
+            for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
+                getter.getThread().join();
+            }
+            sendSupervisor.getThread().join();
+            mcastReceiver.getThread().join();
+            unicastReceiver.getThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("watki zakonczone");
+        /*
+
+        try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -214,6 +227,7 @@ public class MNCController extends MNCDevice {
             System.out.println(watek.toString());
             //watek.join();
         }
+        */
         /*
         try {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
