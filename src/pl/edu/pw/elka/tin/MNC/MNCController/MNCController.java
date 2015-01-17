@@ -301,6 +301,7 @@ public class MNCController extends MNCDevice {
                                 break;
                         }
                     }
+                    System.out.println(set.getGroup());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
