@@ -10,6 +10,7 @@ import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCToken;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
 
@@ -138,7 +139,9 @@ public class MNCSystemLog {
 
         public MNCGuiMenagerCommunication(){
             try {
-                socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
+                //socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT), 1000);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 new Thread(new ReceiveFromManager()).start();
                 connected = true;
