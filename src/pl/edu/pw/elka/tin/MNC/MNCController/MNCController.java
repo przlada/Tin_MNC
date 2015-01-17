@@ -36,7 +36,7 @@ public class MNCController extends MNCDevice {
         tokenOwnerGetters = new TreeMap<String, MNCControllerTokenGetter>();
         sendBuffer = new LinkedBlockingQueue<MNCDeviceParameterSet>();
         sendSupervisor = new SendParameterSetSupervisor();
-        new Thread(sendSupervisor).start();
+        new Thread(sendSupervisor, "sendSupervisor").start();
     }
 
     public void addToken(String group){
@@ -185,7 +185,7 @@ public class MNCController extends MNCDevice {
             if(tokensOwners.contains(group) == false && !tokenOwnerGetters.containsKey(group)){
                 MNCControllerTokenGetter tokenGetter = new MNCControllerTokenGetter(this, group);
                 tokenOwnerGetters.put(group, tokenGetter);
-                new Thread(tokenGetter).start();
+                new Thread(tokenGetter, "tokenGeter:"+group).start();
             }
         }
     }
@@ -202,9 +202,13 @@ public class MNCController extends MNCDevice {
             e.printStackTrace();
         }
         mcastReceiver.setRunning(false);
-        unicastReceiver.setRunning(false);
+        unicastReceiver.stopRunning();
         System.out.println("czekam na zkonczenie watkow");
-
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         for(Thread watek : threadSet){
             System.out.println(watek.toString());

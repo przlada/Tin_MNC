@@ -52,5 +52,6 @@ public class MNCMulticastReceiver implements Runnable {
             }
         }
         udpListener.close();
+        System.out.println("zakonczono watek multicast receiver");
     }
 }

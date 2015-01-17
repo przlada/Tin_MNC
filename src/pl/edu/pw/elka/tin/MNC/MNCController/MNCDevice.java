@@ -44,8 +44,8 @@ public abstract class MNCDevice implements Serializable{
         receivedParameters = new Hashtable<String, Hashtable<Integer, Hashtable<Integer, MNCDeviceParameter>>>();
         consumedParametersSets = new Hashtable<String, TreeSet<Integer>>();
         try {
-            new Thread(mcastReceiver = new MNCMulticastReceiver(this)).start();
-            new Thread(unicastReceiver = new MNCUnicastReceiver(this)).start();
+            new Thread(mcastReceiver = new MNCMulticastReceiver(this), "mcastReceiver").start();
+            new Thread(unicastReceiver = new MNCUnicastReceiver(this), "unicastReceiver").start();
         } catch (IOException e) {
             e.printStackTrace();
         }

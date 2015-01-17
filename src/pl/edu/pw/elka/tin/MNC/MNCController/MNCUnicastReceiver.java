@@ -31,8 +31,13 @@ public class MNCUnicastReceiver implements Runnable{
         return running;
     }
 
-    public synchronized void setRunning(boolean r){
-        running = r;
+    public synchronized void stopRunning(){
+        running = false;
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Thread getThread(){
@@ -48,7 +53,6 @@ public class MNCUnicastReceiver implements Runnable{
                     Thread t = new Thread(w);
                     t.start();
             }
-            server.close();
         } catch (IOException e) {
             System.out.println("Accept failed: 4444");
         }
