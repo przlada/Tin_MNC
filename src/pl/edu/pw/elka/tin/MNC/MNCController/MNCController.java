@@ -196,7 +196,7 @@ public class MNCController extends MNCDevice {
         }
         sendSupervisor.setRunning(false);
         try {
-            sendBuffer.put(new MNCDeviceParameterSet("group"));
+            sendBuffer.put(new MNCDeviceParameterSet("group1234"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -277,6 +277,7 @@ public class MNCController extends MNCDevice {
             while(isRunning()){
                 try {
                     set = sendBuffer.take();
+                    System.out.println(set.getGroup());
                     while(isRunning()) {
                         MNCDatagram data = new MNCDatagram(getMyAddress(), getTokensOwners().get(set.getGroup()), set.getGroup(), MNCDatagram.TYPE.DATA_FULL, set);
                         int id = sendUnicastDatagram(data);
