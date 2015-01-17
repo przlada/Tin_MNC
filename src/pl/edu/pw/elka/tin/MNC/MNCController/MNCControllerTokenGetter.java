@@ -23,7 +23,7 @@ public class MNCControllerTokenGetter implements Runnable {
     private MNCDatagram iHaveTmp;
     private MNCDatagram iHaveToken;
     private MNCDatagram whoInGroup;
-
+    private boolean running = true;
 
     public MNCControllerTokenGetter(MNCController controller, String group){
         parentController = controller;
@@ -57,10 +57,18 @@ public class MNCControllerTokenGetter implements Runnable {
             }
     }
 
+    public synchronized boolean isRunning(){
+        return running;
+    }
+
+    public synchronized void setRunning(boolean r){
+        running = r;
+    }
+
     @Override
     public void run() {
         try {
-            while(true){
+            while(isRunning()){
                 parentController.sendDatagram(isThereToken);
                 Thread.sleep(MNCConsts.WAIT_FOR_TOKEN_TIMEOUT);
                 if(found)
@@ -91,37 +99,5 @@ public class MNCControllerTokenGetter implements Runnable {
         finally{
             parentController.tokenOwnerGetters.remove(group);
         }
-
-        /*
-        MNCDatagram isThereToken = new MNCDatagram(parentController.getMyAddress(), MNCConsts.MULTICAST_ADDR, group, MNCDatagram.TYPE.IS_THERE_TOKEN, null);
-        try {
-            parentController.sendDatagram(isThereToken);
-            Thread.sleep(MNCConsts.WAIT_FOR_TOKEN_TIMEOUT);
-            if(!found){
-                if(!someoneSendTmp) {
-                    MNCDatagram iHaveTmp = new MNCDatagram(parentController.getMyAddress(), MNCConsts.MULTICAST_ADDR, group, MNCDatagram.TYPE.I_HAVE_TMP_TOKEN, null);
-                    Thread.sleep(rand.nextInt(50));
-                    parentController.sendDatagram(iHaveTmp);
-                    Thread.sleep(MNCConsts.WAIT_FOR_TMP_TOKEN);
-                    if(!found)
-                    parentController.sendDatagram(isThereToken);
-                }
-
-                if(highestPrior.equals(parentController.getMyAddress())){
-                    parentController.addToken(group);
-                    sendDatagram = new MNCDatagram(parentController.getMyAddress(), MNCConsts.MULTICAST_ADDR, group, MNCDatagram.TYPE.WHO_IN_GROUP, null);
-                    parentController.sendDatagram(sendDatagram);
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        finally {
-            parentController.tokenOwnerGetters.remove(group);
-        }
-        */
     }
 }

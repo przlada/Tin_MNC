@@ -11,6 +11,7 @@ import pl.edu.pw.elka.tin.MNC.MNCSystemLog;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -188,6 +189,17 @@ public class MNCController extends MNCDevice {
         }
     }
 
+    //@Override
+    public synchronized void closeDevice() {
+        for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
+            getter.setRunning(false);
+        }
+        sendSupervisor.setRunning(false);
+        mcastReceiver.setRunning(false);
+        unicastReceiver.setRunning(false);
+        log.stopWorking();
+    }
+
     public synchronized void transferToken(String group){
         MNCToken token = tokens.get(group);
         if(token != null) {
@@ -218,7 +230,8 @@ public class MNCController extends MNCDevice {
 
     private class SendParameterSetSupervisor implements Runnable{
         private MNCDeviceParameterSet waitingToConfirm = null;
-        private Boolean confirmed = false;
+        private boolean confirmed = false;
+        private boolean running = true;
 
         public synchronized void receivedData(String group, int id){
             if(waitingToConfirm != null && waitingToConfirm.getGroup().equals(group) && waitingToConfirm.getParameterSetID() == id) {
@@ -227,13 +240,21 @@ public class MNCController extends MNCDevice {
             }
         }
 
+        public synchronized boolean isRunning(){
+            return running;
+        }
+
+        public synchronized void setRunning(boolean r){
+            running = r;
+        }
+
         @Override
         public void run() {
             MNCDeviceParameterSet set;
-            while(true){
+            while(isRunning()){
                 try {
                     set = sendBuffer.take();
-                    while(true) {
+                    while(isRunning()) {
                         MNCDatagram data = new MNCDatagram(getMyAddress(), getTokensOwners().get(set.getGroup()), set.getGroup(), MNCDatagram.TYPE.DATA_FULL, set);
                         int id = sendUnicastDatagram(data);
                         while (id <= 0) {
@@ -262,5 +283,7 @@ public class MNCController extends MNCDevice {
             }
         }
     }
+
+
 
 }

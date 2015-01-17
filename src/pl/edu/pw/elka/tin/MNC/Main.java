@@ -66,6 +66,9 @@ public class Main {
                         command = in.nextLine();
                         ((MNCController) device).transferToken(command);
                     }
+                    else if(command.equals("quit") || command.equals("q")){
+                        ((MNCController) device).closeDevice();
+                    }
                 }
             }
         } catch (java.io.IOException e) {

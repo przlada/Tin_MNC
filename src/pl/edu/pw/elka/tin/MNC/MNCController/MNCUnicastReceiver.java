@@ -12,8 +12,10 @@ import java.net.Socket;
  * @author Karol
  */
 public class MNCUnicastReceiver implements Runnable{
-    ServerSocket server;
-    MNCDevice myDevice;
+    private ServerSocket server;
+    private MNCDevice myDevice;
+    private boolean running = true;
+
 
     public MNCUnicastReceiver(MNCDevice device){
         myDevice = device;
@@ -25,17 +27,26 @@ public class MNCUnicastReceiver implements Runnable{
         }
     }
 
+    public synchronized boolean isRunning(){
+        return running;
+    }
+
+    public synchronized void setRunning(boolean r){
+        running = r;
+    }
+
     @Override
     public void run() {
-        while(true){
-            ClientWorker w;
-            try{
-                w = new ClientWorker(server.accept());
-                Thread t = new Thread(w);
-                t.start();
-            } catch (IOException e) {
-                System.out.println("Accept failed: 4444");
+        try {
+            while (isRunning()) {
+                ClientWorker w;
+                    w = new ClientWorker(server.accept());
+                    Thread t = new Thread(w);
+                    t.start();
             }
+            server.close();
+        } catch (IOException e) {
+            System.out.println("Accept failed: 4444");
         }
     }
 

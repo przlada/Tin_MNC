@@ -125,26 +125,42 @@ public class MNCSystemLog {
         print(getLangText(lang,"RemoveDeviceFromTokenList")+address);
     }
 
+    public void stopWorking(){
+        guiManager.setRunning(false);
+    }
+
     private class MNCGuiMenagerCommunication{
         private Socket socket;
         private ObjectOutputStream out;
         private ObjectInputStream in;
+        private boolean connected = false;
+        private boolean running = true;
 
         public MNCGuiMenagerCommunication(){
             try {
                 socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
                 out = new ObjectOutputStream(socket.getOutputStream());
+                new Thread(new ReceiveFromManager()).start();
+                connected = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            new Thread(new ReceiveFromManager()).start();
         }
         public synchronized void sendToManager(MNCControlEvent data){
+            if(!connected) return;
             try {
                 out.writeObject(data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public synchronized boolean isRunning(){
+            return running;
+        }
+
+        public synchronized void setRunning(boolean r){
+            running = r;
         }
 
         private class ReceiveFromManager implements Runnable{
@@ -155,8 +171,9 @@ public class MNCSystemLog {
                     in = new ObjectInputStream(socket.getInputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    connected = false;
                 }
-                while(true){
+                while(isRunning()){
                     try {
                         MNCControlEvent mncControlEvent = (MNCControlEvent) in.readObject();
                         System.out.println((String)mncControlEvent.data);
@@ -166,7 +183,6 @@ public class MNCSystemLog {
                         e.printStackTrace();
                     }
                 }
-
             }
         }
 

@@ -30,8 +30,8 @@ public abstract class MNCDevice implements Serializable{
     private String name;
     private MNCAddress myAddress;
     private DatagramSocket udpClient;
-    private Thread mcastReceiver;
-    private Thread unicastReceiver;
+    protected MNCMulticastReceiver mcastReceiver;
+    protected MNCUnicastReceiver unicastReceiver;
 
     public MNCDevice(String name, MNCAddress addr, MNCSystemLog log) throws SocketException {
         this.name = name;
@@ -44,10 +44,8 @@ public abstract class MNCDevice implements Serializable{
         receivedParameters = new Hashtable<String, Hashtable<Integer, Hashtable<Integer, MNCDeviceParameter>>>();
         consumedParametersSets = new Hashtable<String, TreeSet<Integer>>();
         try {
-            mcastReceiver = new Thread(new MNCMulticastReceiver(this));
-            unicastReceiver = new Thread(new MNCUnicastReceiver(this));
-            mcastReceiver.start();
-            unicastReceiver.start();
+            new Thread(mcastReceiver = new MNCMulticastReceiver(this)).start();
+            new Thread(unicastReceiver = new MNCUnicastReceiver(this)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,5 +140,7 @@ public abstract class MNCDevice implements Serializable{
         return false;
     }
     protected abstract void checkTokenOwners();
+
+    //public abstract void closeDevice();
 
 }

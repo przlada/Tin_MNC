@@ -15,6 +15,7 @@ import java.net.MulticastSocket;
 public class MNCMulticastReceiver implements Runnable {
     private MNCDevice myDevice;
     private MulticastSocket udpListener;
+    private boolean running = true;
 
     MNCMulticastReceiver(MNCDevice device) throws IOException {
         myDevice = device;
@@ -23,10 +24,18 @@ public class MNCMulticastReceiver implements Runnable {
         udpListener.joinGroup(group);
     }
 
+    public synchronized boolean isRunning(){
+        return running;
+    }
+
+    public synchronized void setRunning(boolean r){
+        running = r;
+    }
+
 
     @Override
     public void run() {
-        while(true){
+        while(isRunning()){
             byte[] buf = new byte[MNCConsts.MAX_UDP_PACKET_SIZE];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             try {
@@ -39,5 +48,6 @@ public class MNCMulticastReceiver implements Runnable {
                 e.printStackTrace();
             }
         }
+        udpListener.close();
     }
 }
