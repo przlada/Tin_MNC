@@ -28,8 +28,9 @@ public class MNCMulticastReceiver implements Runnable {
         return running;
     }
 
-    public synchronized void setRunning(boolean r){
-        running = r;
+    public synchronized void stopRunning(){
+        running = false;
+        udpListener.close();
     }
 
     public Thread getThread(){
@@ -51,7 +52,6 @@ public class MNCMulticastReceiver implements Runnable {
                 e.printStackTrace();
             }
         }
-        udpListener.close();
         System.out.println("zakonczono watek multicast receiver");
     }
 }

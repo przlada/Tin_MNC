@@ -201,7 +201,7 @@ public class MNCController extends MNCDevice {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mcastReceiver.setRunning(false);
+        mcastReceiver.stopRunning();
         unicastReceiver.stopRunning();
         System.out.println("czekam na zkonczenie watkow");
         try {
