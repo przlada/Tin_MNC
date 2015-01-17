@@ -16,6 +16,7 @@ public class MNCMulticastReceiver implements Runnable {
     private MNCDevice myDevice;
     private MulticastSocket udpListener;
     private boolean running = true;
+    private Thread myThread = null;
 
     MNCMulticastReceiver(MNCDevice device) throws IOException {
         myDevice = device;
@@ -34,11 +35,12 @@ public class MNCMulticastReceiver implements Runnable {
     }
 
     public Thread getThread(){
-        return Thread.currentThread();
+        return myThread;
     }
 
     @Override
     public void run() {
+        myThread = Thread.currentThread();
         while(isRunning()){
             byte[] buf = new byte[MNCConsts.MAX_UDP_PACKET_SIZE];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);

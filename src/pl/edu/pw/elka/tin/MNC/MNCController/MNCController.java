@@ -218,11 +218,11 @@ public class MNCController extends MNCDevice {
         System.out.println("czekam na zkonczenie watkow");
         try {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
-                getter.getThread().join();
+                if(getter != null) getter.getThread().join();
             }
-            sendSupervisor.getThread().join();
-            mcastReceiver.getThread().join();
-            unicastReceiver.getThread().join();
+            if(sendSupervisor != null) sendSupervisor.getThread().join();
+            if(mcastReceiver != null) mcastReceiver.getThread().join();
+            if(unicastReceiver != null) unicastReceiver.getThread().join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -285,6 +285,7 @@ public class MNCController extends MNCDevice {
         private MNCDeviceParameterSet waitingToConfirm = null;
         private boolean confirmed = false;
         private boolean running = true;
+        private Thread myThread = null;
 
         public synchronized void receivedData(String group, int id){
             if(waitingToConfirm != null && waitingToConfirm.getGroup().equals(group) && waitingToConfirm.getParameterSetID() == id) {
@@ -302,11 +303,12 @@ public class MNCController extends MNCDevice {
         }
 
         public Thread getThread(){
-            return Thread.currentThread();
+            return myThread;
         }
 
         @Override
         public void run() {
+            myThread = Thread.currentThread();
             MNCDeviceParameterSet set = null;
             while(isRunning()){
                 try {

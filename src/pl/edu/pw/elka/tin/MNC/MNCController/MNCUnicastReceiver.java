@@ -15,6 +15,7 @@ public class MNCUnicastReceiver implements Runnable{
     private ServerSocket server;
     private MNCDevice myDevice;
     private boolean running = true;
+    private Thread myThread = null;
 
 
     public MNCUnicastReceiver(MNCDevice device){
@@ -41,11 +42,12 @@ public class MNCUnicastReceiver implements Runnable{
     }
 
     public Thread getThread(){
-        return Thread.currentThread();
+        return myThread;
     }
 
     @Override
     public void run() {
+        myThread = Thread.currentThread();
         try {
             while (isRunning()) {
                 ClientWorker w;

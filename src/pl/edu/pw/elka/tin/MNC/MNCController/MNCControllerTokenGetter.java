@@ -24,6 +24,7 @@ public class MNCControllerTokenGetter implements Runnable {
     private MNCDatagram iHaveToken;
     private MNCDatagram whoInGroup;
     private boolean running = true;
+    private Thread myThread = null;
 
     public MNCControllerTokenGetter(MNCController controller, String group){
         parentController = controller;
@@ -66,11 +67,12 @@ public class MNCControllerTokenGetter implements Runnable {
     }
 
     public Thread getThread(){
-        return Thread.currentThread();
+        return myThread;
     }
 
     @Override
     public void run() {
+        myThread = Thread.currentThread();
         try {
             while(isRunning()){
                 parentController.sendDatagram(isThereToken);
