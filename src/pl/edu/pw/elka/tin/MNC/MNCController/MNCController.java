@@ -273,7 +273,7 @@ public class MNCController extends MNCDevice {
 
         @Override
         public void run() {
-            MNCDeviceParameterSet set;
+            MNCDeviceParameterSet set = null;
             while(isRunning()){
                 try {
                     set = sendBuffer.take();
@@ -305,6 +305,9 @@ public class MNCController extends MNCDevice {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            if(set != null){
+                System.out.println(set.getGroup());
             }
         }
     }
