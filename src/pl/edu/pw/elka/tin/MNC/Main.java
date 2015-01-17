@@ -70,6 +70,7 @@ public class Main {
                     else if(command.equals("quit") || command.equals("q")){
                         ((MNCController) device).closeDevice();
                         log.stopWorking();
+                        break;
                     }
                 }
             }
