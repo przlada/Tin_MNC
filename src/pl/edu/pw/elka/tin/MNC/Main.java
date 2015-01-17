@@ -37,16 +37,17 @@ public class Main {
         String command;
         Scanner in = new Scanner(System.in);
         MNCDict.Langs lang = MNCDict.Langs.PL;
+        MNCSystemLog log = new MNCSystemLog(lang);
         try {
             if(args.length >= 2) {
                 MNCDevice device;
                 if (args[1].equals("C")) {
                     myAddress =  new MNCAddress(inetAddress.getHostAddress(), MNCAddress.TYPE.CONTROLLER);
-                    device = new MNCController(args[0], myAddress, new MNCSystemLog(lang));
+                    device = new MNCController(args[0], myAddress, log);
                 }
                 else {
                     myAddress =  new MNCAddress(inetAddress.getHostAddress(), MNCAddress.TYPE.MONITOR);
-                    device = new MNCMonitor(args[0], myAddress, new MNCSystemLog(lang));
+                    device = new MNCMonitor(args[0], myAddress, log);
                 }
                 for (int i = 2; i < args.length; i++)
                     device.addGroup(args[i]);
@@ -68,6 +69,7 @@ public class Main {
                     }
                     else if(command.equals("quit") || command.equals("q")){
                         ((MNCController) device).closeDevice();
+                        log.stopWorking();
                     }
                 }
             }

@@ -32,6 +32,9 @@ public class MNCMulticastReceiver implements Runnable {
         running = r;
     }
 
+    public Thread getThread(){
+        return Thread.currentThread();
+    }
 
     @Override
     public void run() {

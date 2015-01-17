@@ -152,7 +152,6 @@ public class MNCSystemLog {
         }
         public synchronized void sendToManager(MNCControlEvent data){
             if(!connected) return;
-            // dziala
             try {
                 out.writeObject(data);
             } catch (IOException e) {

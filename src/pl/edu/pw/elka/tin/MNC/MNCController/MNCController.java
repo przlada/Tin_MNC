@@ -197,7 +197,17 @@ public class MNCController extends MNCDevice {
         sendSupervisor.setRunning(false);
         mcastReceiver.setRunning(false);
         unicastReceiver.setRunning(false);
-        log.stopWorking();
+
+        try {
+            for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
+                getter.getThread().join();
+            }
+            sendSupervisor.getThread().join();
+            mcastReceiver.getThread().join();
+            unicastReceiver.getThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void transferToken(String group){
@@ -246,6 +256,10 @@ public class MNCController extends MNCDevice {
 
         public synchronized void setRunning(boolean r){
             running = r;
+        }
+
+        public Thread getThread(){
+            return Thread.currentThread();
         }
 
         @Override

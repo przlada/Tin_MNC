@@ -35,6 +35,10 @@ public class MNCUnicastReceiver implements Runnable{
         running = r;
     }
 
+    public Thread getThread(){
+        return Thread.currentThread();
+    }
+
     @Override
     public void run() {
         try {
