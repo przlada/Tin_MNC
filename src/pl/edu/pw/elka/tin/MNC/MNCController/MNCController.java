@@ -203,6 +203,12 @@ public class MNCController extends MNCDevice {
         }
         mcastReceiver.stopRunning();
         unicastReceiver.stopRunning();
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for(Thread watek : threadSet){
+            System.out.println(watek.toString());
+        }
+
         System.out.println("czekam na zkonczenie watkow");
         try {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
@@ -215,10 +221,6 @@ public class MNCController extends MNCDevice {
             e.printStackTrace();
         }
         System.out.println("watki zakonczone");
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        for(Thread watek : threadSet){
-            System.out.println(watek.toString());
-        }
         /*
 
         try {
