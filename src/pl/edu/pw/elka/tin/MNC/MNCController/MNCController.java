@@ -215,6 +215,10 @@ public class MNCController extends MNCDevice {
             e.printStackTrace();
         }
         System.out.println("watki zakonczone");
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for(Thread watek : threadSet){
+            System.out.println(watek.toString());
+        }
         /*
 
         try {
