@@ -49,7 +49,7 @@ public class MNCMulticastReceiver implements Runnable {
                 MNCDatagram datagram = MNCDatagram.toMNCDatagram(packet.getData());
                 myDevice.receiveDatagram(datagram);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

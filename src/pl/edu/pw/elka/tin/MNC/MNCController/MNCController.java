@@ -197,23 +197,12 @@ public class MNCController extends MNCDevice {
         }
         sendSupervisor.setRunning(false);
         try {
-            sendBuffer.put(new MNCDeviceParameterSet("group1234"));
+            sendBuffer.put(new MNCDeviceParameterSet("group"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         mcastReceiver.stopRunning();
         unicastReceiver.stopRunning();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        for(Thread watek : threadSet){
-            System.out.println(watek.toString());
-        }
 
         System.out.println("czekam na zkonczenie watkow");
         try {
@@ -227,30 +216,6 @@ public class MNCController extends MNCDevice {
             e.printStackTrace();
         }
         System.out.println("watki zakonczone");
-        /*
-
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        for(Thread watek : threadSet){
-            System.out.println(watek.toString());
-            //watek.join();
-        }
-        */
-        /*
-        try {
-            for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
-                getter.getThread().join();
-            }
-            System.out.println("zakonczone gettery");
-            sendSupervisor.getThread().join();
-            System.out.println("watki 2");
-            mcastReceiver.getThread().join();
-            System.out.println("watki 3");
-            unicastReceiver.getThread().join();
-            System.out.println("watki zakonczone");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     public synchronized void transferToken(String group){
@@ -313,7 +278,6 @@ public class MNCController extends MNCDevice {
             while(isRunning()){
                 try {
                     set = sendBuffer.take();
-                    System.out.println(set.getGroup());
                     while(isRunning()) {
                         MNCDatagram data = new MNCDatagram(getMyAddress(), getTokensOwners().get(set.getGroup()), set.getGroup(), MNCDatagram.TYPE.DATA_FULL, set);
                         int id = sendUnicastDatagram(data);
@@ -337,13 +301,9 @@ public class MNCController extends MNCDevice {
                                 break;
                         }
                     }
-                    System.out.println(set.getGroup());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-            if(set != null){
-                System.out.println(set.getGroup());
             }
         }
     }
