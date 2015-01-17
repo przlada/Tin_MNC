@@ -85,21 +85,6 @@ public class MNCSystemLog {
         return device;
     }
 
-    /*
-    public void setDevice(MNCDevice dev){
-        device = dev;
-        if(dev != null)
-            controllerName = device.getName();
-        else
-            controllerName = getLangText(lang, "NoNameController");
-        print(getLangText(lang,"ControllerStarted") + controllerName);
-    }
-    */
-
-    public synchronized Langs getLang(){
-        return lang;
-    }
-
     public synchronized void setLang(Langs l){
         lang = l;
     }
