@@ -146,7 +146,8 @@ public class MNCSystemLog {
                 new Thread(new ReceiveFromManager()).start();
                 connected = true;
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.out.println("Nie można nawiażać połączenia z managerem");
             }
         }
         public synchronized void sendToManager(MNCControlEvent data){
