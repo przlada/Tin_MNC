@@ -195,6 +195,11 @@ public class MNCController extends MNCDevice {
             getter.setRunning(false);
         }
         sendSupervisor.setRunning(false);
+        try {
+            sendBuffer.put(new MNCDeviceParameterSet("group"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         mcastReceiver.setRunning(false);
         unicastReceiver.setRunning(false);
         System.out.println("czekam na zkonczenie watkow");
