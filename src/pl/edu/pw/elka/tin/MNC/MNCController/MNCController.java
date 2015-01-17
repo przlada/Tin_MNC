@@ -214,13 +214,6 @@ public class MNCController extends MNCDevice {
             System.out.println(watek.toString());
             //watek.join();
         }
-        for(Thread watek : threadSet){
-            try {
-                watek.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         /*
         try {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
