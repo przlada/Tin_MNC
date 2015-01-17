@@ -202,8 +202,11 @@ public class MNCController extends MNCDevice {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
                 getter.getThread().join();
             }
+            System.out.println("zakonczone gettery");
             sendSupervisor.getThread().join();
+            System.out.println("watki 2");
             mcastReceiver.getThread().join();
+            System.out.println("watki 3");
             unicastReceiver.getThread().join();
             System.out.println("watki zakonczone");
         } catch (InterruptedException e) {
