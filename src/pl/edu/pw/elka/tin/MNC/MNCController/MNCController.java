@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -203,6 +204,20 @@ public class MNCController extends MNCDevice {
         mcastReceiver.setRunning(false);
         unicastReceiver.setRunning(false);
         System.out.println("czekam na zkonczenie watkow");
+
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for(Thread watek : threadSet){
+            System.out.println(watek.toString());
+            //watek.join();
+        }
+        for(Thread watek : threadSet){
+            try {
+                watek.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        /*
         try {
             for(MNCControllerTokenGetter getter : tokenOwnerGetters.values()){
                 getter.getThread().join();
@@ -217,6 +232,7 @@ public class MNCController extends MNCDevice {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public synchronized void transferToken(String group){
