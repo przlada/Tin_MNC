@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,9 +42,8 @@ public class MNCSystemLog {
     }
 
     public static String getLocalAddress(){
-        NetworkInterface netint = null;
         try {
-            netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
+            NetworkInterface netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
             Enumeration addresses = netint.getInetAddresses();
             InetAddress inetAddress = null;
             while (addresses.hasMoreElements()) {
@@ -103,8 +101,6 @@ public class MNCSystemLog {
     }
 
     private void print(String text){
-        Date date= new Date();
-        //System.out.println(new Timestamp(date.getTime()) + " " + controllerName+ " " + text);
         System.out.println(controllerName+ " " + text);
     }
 

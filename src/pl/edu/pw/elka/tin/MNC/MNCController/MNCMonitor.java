@@ -4,7 +4,6 @@ import pl.edu.pw.elka.tin.MNC.MNCAddress;
 import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameter;
-import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
 import pl.edu.pw.elka.tin.MNC.MNCSystemLog;
 
 import java.io.IOException;
@@ -60,15 +59,13 @@ public class MNCMonitor extends MNCDevice {
     }
 
     public synchronized int receiveUnicastData(MNCDatagram datagram){
-        log.acction("odebrano "+datagram.toString());
-        switch (datagram.getType()){
-        }
+        log.actionReceiveUnicastDatagram(datagram);
         return 0;
     }
 
     protected void checkTokenOwners(){
         for (String group : myGroups) {
-            if(tokensOwners.contains(group) == false && !tokenOwnerGetters.containsKey(group)){
+            if(!tokensOwners.containsKey(group) && !tokenOwnerGetters.containsKey(group)){
                 MNCMonitorTokenGetter getter = new MNCMonitorTokenGetter(this, group);
                 tokenOwnerGetters.put(group, getter);
                 new Thread(getter, "monitorTokenGetter").start();

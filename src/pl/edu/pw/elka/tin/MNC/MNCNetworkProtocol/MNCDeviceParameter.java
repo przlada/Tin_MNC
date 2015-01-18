@@ -18,7 +18,9 @@ public class MNCDeviceParameter implements Serializable {
     }
 
     public String getText(){
-        return (String) value;
+        if(type == TYPE.TEXT)
+            return (String) value;
+        return null;
     }
 
     public int getIndex() {

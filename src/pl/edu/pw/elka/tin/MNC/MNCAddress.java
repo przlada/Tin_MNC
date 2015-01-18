@@ -19,7 +19,9 @@ public class MNCAddress implements Serializable, Comparable<MNCAddress>{
 
     @Override
     public int compareTo(MNCAddress other) {
-        return address.compareTo(other.address);
+        if(other != null)
+            return address.compareTo(other.address);
+        return 1;
     }
 
     public InetAddress getJavaAddress() throws UnknownHostException {
@@ -47,11 +49,7 @@ public class MNCAddress implements Serializable, Comparable<MNCAddress>{
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        if (!address.equals(((MNCAddress)obj).address))
-            return false;
-        return true;
+        return getClass() == obj.getClass() && address.equals(((MNCAddress) obj).address);
     }
 
     public static enum TYPE {

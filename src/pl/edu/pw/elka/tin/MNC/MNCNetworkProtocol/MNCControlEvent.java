@@ -3,7 +3,8 @@ package pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol;
 import java.io.Serializable;
 
 /**
- * Created by przemek on 11.01.15.
+ * Dane przesyłane pomiędzy sterownikiem a Menagerem GUI.
+ * @author Paweł
  */
 public class MNCControlEvent implements Serializable{
     public static enum TYPE{
@@ -36,10 +37,10 @@ public class MNCControlEvent implements Serializable{
         TokenInfo
     }
 
-    public final TYPE type;
-    public final Object data;
-    public String[] group = null;
-    public String name = null;
+    private final TYPE type;
+    private final Object data;
+    private String[] group = null;
+    private String name = null;
 
     public MNCControlEvent(TYPE t, Object d){
         type = t;
@@ -75,7 +76,7 @@ public class MNCControlEvent implements Serializable{
     public String toString(){
         String text = "";
         if(type == TYPE.Command){
-            text = "Command from Gui "+(String)data+" to group:";
+            text = "Command from Gui "+data+" to group:";
             if(group != null)
                 for(String g : group)
                     text+=g+" ";

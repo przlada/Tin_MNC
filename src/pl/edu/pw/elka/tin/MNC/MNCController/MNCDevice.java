@@ -123,10 +123,7 @@ public abstract class MNCDevice implements Serializable{
             receivedParameters.get(group).put(param.getParameterSetId(), new Hashtable<Integer, MNCDeviceParameter>());
         }
         receivedParameters.get(group).get(param.getParameterSetId()).put(param.getIndex(),param);
-        if(receivedParameters.get(group).get(param.getParameterSetId()).size() >= MNCConsts.PARAMETER_SET_SIZE) {
-            return true;
-        }
-        return false;
+        return receivedParameters.get(group).get(param.getParameterSetId()).size() >= MNCConsts.PARAMETER_SET_SIZE;
     }
 
     public boolean dataConsumption(String group, int paramSetId){

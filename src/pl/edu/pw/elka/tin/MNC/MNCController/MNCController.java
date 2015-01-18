@@ -275,7 +275,7 @@ public class MNCController extends MNCDevice {
         @Override
         public void run() {
             myThread = Thread.currentThread();
-            MNCDeviceParameterSet set = null;
+            MNCDeviceParameterSet set;
             while(isRunning()){
                 try {
                     set = sendBuffer.take();

@@ -8,11 +8,13 @@ import java.util.Enumeration;
 import java.util.TreeSet;
 
 /**
- * Created by przemek on 10.01.15.
+ * Tester przesyłania datagramów multicast.
+ * @author Maciek
  */
 public class MNCMcastTest implements Runnable{
     private DatagramSocket udpClient;
     private String name;
+    private boolean running = true;
 
     public MNCMcastTest(String name){
         this.name = name;
@@ -25,9 +27,8 @@ public class MNCMcastTest implements Runnable{
     }
 
     public static void main(String[] args) {
-        NetworkInterface netint = null;
         try {
-            netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
+            NetworkInterface netint = NetworkInterface.getByName(MNCConsts.DEFAULT_INTERFACE_NAME);
             Enumeration addresses = netint.getInetAddresses();
             InetAddress inetAddress = null;
             while (addresses.hasMoreElements()) {
@@ -50,22 +51,17 @@ public class MNCMcastTest implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
+        while(running) {
             byte data[] = name.getBytes();
-            DatagramPacket packet = null;
             try {
-                packet = new DatagramPacket(data, data.length, MNCConsts.MULTICAST_ADDR.getJavaAddress(), MNCConsts.MCAST_PORT);
+                DatagramPacket packet = new DatagramPacket(data, data.length, MNCConsts.MULTICAST_ADDR.getJavaAddress(), MNCConsts.MCAST_PORT);
+                udpClient.send(packet);
+                Thread.sleep(500);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
-            }
-            try {
-                udpClient.send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                Thread.sleep(500);
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -88,7 +84,7 @@ public class MNCMcastTest implements Runnable{
 
         @Override
         public void run() {
-            while (true) {
+            while (running) {
                 byte[] buf = new byte[MNCConsts.MAX_UDP_PACKET_SIZE];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 try {

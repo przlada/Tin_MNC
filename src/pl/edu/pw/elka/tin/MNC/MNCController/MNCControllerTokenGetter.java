@@ -5,7 +5,6 @@ import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
 
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * Wątek odpowiedzialny za negocjację podczas inicjalizacji tokena
@@ -16,7 +15,6 @@ public class MNCControllerTokenGetter implements Runnable {
     private String group;
     private MNCAddress highestPrior;
     private Boolean found;
-    private Random rand;
     private Boolean someoneSendTmp;
     private Boolean secondPhase;
     private MNCDatagram isThereToken;
@@ -31,7 +29,6 @@ public class MNCControllerTokenGetter implements Runnable {
         this.group = group;
         highestPrior = parentController.getMyAddress();
         found = false;
-        rand = new Random(parentController.getMyAddress().hashCode());
         someoneSendTmp = false;
         secondPhase = false;
         isThereToken = new MNCDatagram(parentController.getMyAddress(), MNCConsts.MULTICAST_ADDR, group, MNCDatagram.TYPE.IS_THERE_TOKEN, null);
