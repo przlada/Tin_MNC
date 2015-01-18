@@ -213,8 +213,7 @@ public class MNCSystemLog {
 
         public MNCGuiMenagerCommunication(){
             try {
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT), 5000);
+                socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 new Thread(new ReceiveFromManager()).start();
                 connected = true;
