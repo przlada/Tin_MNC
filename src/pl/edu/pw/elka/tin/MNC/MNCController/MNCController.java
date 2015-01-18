@@ -164,7 +164,8 @@ public class MNCController extends MNCDevice {
                 if(getGroups().contains(datagram.getGroup())){
                     tokens.put(datagram.getGroup(), (MNCToken)datagram.getData());
                     tokensOwners.put(datagram.getGroup(), getMyAddress());
-                    log.actionReceivedToken((MNCToken)datagram.getData());
+                    log.actionReceivedToken((MNCToken) datagram.getData());
+                    log.informGuiManagerTokensChange();
                     MNCDatagram iHaveToken = new MNCDatagram(getMyAddress(), MNCConsts.MULTICAST_ADDR, datagram.getGroup(), MNCDatagram.TYPE.I_HAVE_TOKEN, null);
                     try {
                         sendDatagram(iHaveToken);

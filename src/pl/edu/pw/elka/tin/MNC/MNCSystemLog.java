@@ -242,6 +242,13 @@ public class MNCSystemLog {
                 }
             }
         }
+        else if(cmd.equals("remove group")){
+            device.removeGroup(command.getGroup()[0]);
+        }
+        else if(cmd.equals("force token transfer")){
+            if(device instanceof MNCController)
+                ((MNCController) device).transferToken(command.getGroup()[0]);
+        }
 
     }
 
