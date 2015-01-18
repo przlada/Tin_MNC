@@ -4,6 +4,7 @@ import pl.edu.pw.elka.tin.MNC.MNCAddress;
 import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameter;
+import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
 import pl.edu.pw.elka.tin.MNC.MNCSystemLog;
 
 import java.io.IOException;
@@ -16,11 +17,11 @@ import java.util.TreeMap;
  * @author Przemek
  */
 public class MNCMonitor extends MNCDevice {
-    protected TreeMap<String, Thread> tokenOwnerGetters;
+    protected TreeMap<String, MNCMonitorTokenGetter> tokenOwnerGetters;
 
     public MNCMonitor(String name, MNCAddress addr, MNCSystemLog log) throws SocketException, UnknownHostException {
         super(name, addr, log);
-        tokenOwnerGetters = new TreeMap<String, Thread>();
+        tokenOwnerGetters = new TreeMap<String, MNCMonitorTokenGetter>();
     }
 
     public synchronized void receiveDatagram(MNCDatagram datagram) {
@@ -68,14 +69,28 @@ public class MNCMonitor extends MNCDevice {
     protected void checkTokenOwners(){
         for (String group : myGroups) {
             if(tokensOwners.contains(group) == false && !tokenOwnerGetters.containsKey(group)){
-                    Thread tokenGetter = new Thread(new MNCMonitorTokenGetter(this, group));
-                    tokenOwnerGetters.put(group, tokenGetter);
-                    tokenGetter.start();
+                MNCMonitorTokenGetter getter = new MNCMonitorTokenGetter(this, group);
+                tokenOwnerGetters.put(group, getter);
+                new Thread(getter, "monitorTokenGetter").start();
             }
         }
     }
 
     public synchronized void closeDevice() {
-
+        for(MNCMonitorTokenGetter getter : tokenOwnerGetters.values())
+            getter.setRunning(false);
+        mcastReceiver.stopRunning();
+        unicastReceiver.stopRunning();
+        System.out.println("czekam na zkonczenie watkow");
+        try {
+            for(MNCMonitorTokenGetter getter : tokenOwnerGetters.values()){
+                if(getter != null) getter.getMyThread().join();
+            }
+            if(mcastReceiver != null) mcastReceiver.getThread().join();
+            if(unicastReceiver != null) unicastReceiver.getThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("watki zakonczone");
     }
 }

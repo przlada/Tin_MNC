@@ -12,14 +12,30 @@ import java.io.IOException;
 public class MNCMonitorTokenGetter implements Runnable {
     private MNCMonitor parentMonitor;
     private String group;
+    private boolean running = true;
+    private Thread myThread = null;
+
+    public synchronized boolean isRunning(){
+        return running;
+    }
+
+    public synchronized void setRunning(boolean r){
+        running = r;
+    }
 
     public MNCMonitorTokenGetter(MNCMonitor monitor, String group){
         parentMonitor = monitor;
         this.group = group;
     }
+
+    public Thread getMyThread(){
+        return myThread;
+    }
+
     @Override
     public void run() {
-        while(!parentMonitor.tokensOwners.containsKey(group)){
+        myThread = Thread.currentThread();
+        while(!parentMonitor.tokensOwners.containsKey(group) && isRunning()){
             MNCDatagram isThereToken = new MNCDatagram(parentMonitor.getMyAddress(), MNCConsts.MULTICAST_ADDR,group, MNCDatagram.TYPE.IS_THERE_TOKEN, null);
             try {
                 parentMonitor.sendDatagram(isThereToken);

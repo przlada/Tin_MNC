@@ -20,6 +20,11 @@ public class Main {
             else
                 deviceType = MNCAddress.TYPE.MONITOR;
 
+            log.startNewDevice(deviceType);
+            for (int i = 1; i < args.length; i++)
+                log.getDevice().addGroup(args[i]);
+            log.startGuiManager();
+
             while(true){
                 command = in.nextLine();
                 if(command.equals("token")){
@@ -47,7 +52,6 @@ public class Main {
                     log.startNewDevice(deviceType);
                     for (int i = 1; i < args.length; i++)
                         log.getDevice().addGroup(args[i]);
-
                 }
             }
         }

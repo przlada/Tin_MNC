@@ -28,7 +28,7 @@ public class MNCSystemLog {
     private String controllerName = null;
     private MNCDevice device;
     private MNCGuiMenagerCommunication guiManager;
-    private MNCAddress.TYPE deviceType;
+    private MNCAddress.TYPE deviceType = MNCAddress.TYPE.CONTROLLER;
 
     public MNCSystemLog(Langs l){
         setLang(l);
@@ -169,6 +169,41 @@ public class MNCSystemLog {
         guiManager.setRunning(false);
     }
 
+    public synchronized void receiveCommandFromManager(MNCControlEvent command){
+        print(command.toString());
+        String cmd = (String)command.getData();
+        if(cmd.equals("shutdown/power_on")) {
+            if (device == null)
+                startNewDevice(deviceType);
+            else
+                stopDevice();
+        }
+        else if(cmd.equals("add group")){
+            device.addGroup(command.getGroup()[0]);
+        }
+        else if(cmd.equals("send data")){
+            if(device instanceof MNCController){
+                MNCDeviceParameterSet paramSet = new MNCDeviceParameterSet(command.getGroup()[0]);
+                paramSet.populateSet();
+                ((MNCController) device).sendParameterSet(paramSet);
+            }
+        }
+        else if(cmd.equals("show_token")){
+            if(device instanceof MNCController) {
+                MNCToken token = ((MNCController) device).getToken(command.getGroup()[0]);
+                System.out.println(token);
+            }
+        }
+
+    }
+
+    public synchronized void startGuiManager(){
+        boolean isMonitor = deviceType == MNCAddress.TYPE.MONITOR;
+        MNCControlEvent data = new MNCControlEvent(TYPE.Start, isMonitor, device.getGroups().toArray(new String[device.getGroups().size()]));
+        data.setName(device.getMyAddress().toString());
+        guiManager.sendToManager(data);
+    }
+
     private class MNCGuiMenagerCommunication{
         private Socket socket;
         private ObjectOutputStream out;
@@ -178,7 +213,6 @@ public class MNCSystemLog {
 
         public MNCGuiMenagerCommunication(){
             try {
-                //socket = new Socket(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT);
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT), 1000);
                 out = new ObjectOutputStream(socket.getOutputStream());
@@ -219,7 +253,7 @@ public class MNCSystemLog {
                 while(isRunning()){
                     try {
                         MNCControlEvent mncControlEvent = (MNCControlEvent) in.readObject();
-                        System.out.println((String)mncControlEvent.data);
+                        receiveCommandFromManager(mncControlEvent);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
