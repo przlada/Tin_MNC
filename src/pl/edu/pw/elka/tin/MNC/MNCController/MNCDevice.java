@@ -72,7 +72,7 @@ public abstract class MNCDevice implements Serializable{
         return tokensOwners;
     }
 
-    public Set<String> getGroups(){
+    public synchronized Set<String> getGroups(){
         return myGroups;
     }
 

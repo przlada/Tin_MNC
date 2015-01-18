@@ -11,8 +11,6 @@ import pl.edu.pw.elka.tin.MNC.MNCSystemLog;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -47,8 +45,9 @@ public class MNCController extends MNCDevice {
         token.addDevice(getMyAddress());
         tokens.put(group,token);
         tokensOwners.put(group, getMyAddress());
+        log.informGuiManagerTokensChange();
     }
-    public MNCToken getToken(String group){
+    public synchronized MNCToken getToken(String group){
         return tokens.get(group);
     }
 
@@ -234,6 +233,7 @@ public class MNCController extends MNCDevice {
                     tokensOwners.put(group, nextOwner);
                     log.actionTokenTransfered(nextOwner);
                 }
+                log.informGuiManagerTokensChange();
             }
         }
     }

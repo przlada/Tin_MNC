@@ -7,7 +7,16 @@ import java.io.Serializable;
  */
 public class MNCControlEvent implements Serializable{
     public static enum TYPE{
-        ReceiveFromMulticast, Command, Start
+        //Logi
+        ReceiveFromMulticast,
+
+        //Komendy od gui managera
+        Command,
+        //Dane specjalne dla GuiManagera
+        Start,
+        MyGroups,
+        MyTokens,
+        TokenInfo
     }
 
     public final TYPE type;

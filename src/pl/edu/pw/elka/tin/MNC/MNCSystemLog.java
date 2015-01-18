@@ -14,6 +14,8 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.Langs;
 import static pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict.getLangText;
@@ -174,6 +176,17 @@ public class MNCSystemLog {
         print(getLangText(lang,"RemoveDeviceFromTokenList")+address);
     }
 
+    public void informGuiManagerTokensChange(){
+        if(device instanceof MNCController) {
+            Set<String> tokenGroups = new HashSet<String>();
+            for(String group : device.getGroups()){
+                if(((MNCController)device).getToken(group) != null)
+                    tokenGroups.add(((MNCController)device).getToken(group).getGroup());
+            }
+            guiManager.sendToManager(new MNCControlEvent(TYPE.MyTokens, null, tokenGroups.toArray(new String[tokenGroups.size()])));
+        }
+    }
+
     public void stopWorking(){
         guiManager.setRunning(false);
     }
@@ -200,7 +213,9 @@ public class MNCSystemLog {
         else if(cmd.equals("show_token")){
             if(device instanceof MNCController) {
                 MNCToken token = ((MNCController) device).getToken(command.getGroup()[0]);
-                System.out.println(token);
+                if(token != null){
+                    guiManager.sendToManager(new MNCControlEvent(TYPE.TokenInfo, token.toString(), command.getGroup()));
+                }
             }
         }
 

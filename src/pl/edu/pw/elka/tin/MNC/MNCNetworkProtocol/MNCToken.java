@@ -38,6 +38,10 @@ public class MNCToken implements Serializable {
         broadcastCounter = 0;
     }
 
+    public String getGroup(){
+        return group;
+    }
+
     public synchronized void addDevice(MNCAddress address){
         devicesInGroup.add(address);
     }
