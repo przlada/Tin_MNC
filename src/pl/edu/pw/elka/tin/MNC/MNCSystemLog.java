@@ -29,10 +29,15 @@ public class MNCSystemLog {
     private MNCDevice device;
     private MNCGuiMenagerCommunication guiManager;
     private MNCAddress.TYPE deviceType = MNCAddress.TYPE.CONTROLLER;
+    private String[] initialGroups = null;
 
     public MNCSystemLog(Langs l){
         setLang(l);
         guiManager = new MNCGuiMenagerCommunication();
+    }
+
+    public void initialGroups(String[] groups){
+        initialGroups = groups;
     }
 
     public static String getLocalAddress(){
@@ -66,6 +71,8 @@ public class MNCSystemLog {
             deviceType = type;
             try {
                 device = new MNCController(deviceType.toString(), deviceAddress, this);
+                for(String group: initialGroups)
+                    device.addGroup(group);
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {

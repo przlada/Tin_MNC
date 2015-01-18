@@ -4,6 +4,7 @@ import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCDict;
 import pl.edu.pw.elka.tin.MNC.MNCController.MNCController;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -14,6 +15,7 @@ public class Main {
             String command;
             Scanner in = new Scanner(System.in);
             MNCSystemLog log = new MNCSystemLog(MNCDict.Langs.PL);
+            log.initialGroups(Arrays.copyOfRange(args, 1, args.length-1));
             MNCAddress.TYPE deviceType;
             if(args[0].equals("C"))
                 deviceType = MNCAddress.TYPE.CONTROLLER;
@@ -21,8 +23,6 @@ public class Main {
                 deviceType = MNCAddress.TYPE.MONITOR;
 
             log.startNewDevice(deviceType);
-            for (int i = 1; i < args.length; i++)
-                log.getDevice().addGroup(args[i]);
             log.startGuiManager();
 
             while(true){
