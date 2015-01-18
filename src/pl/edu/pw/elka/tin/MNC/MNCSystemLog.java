@@ -214,7 +214,7 @@ public class MNCSystemLog {
         public MNCGuiMenagerCommunication(){
             try {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT), 1000);
+                socket.connect(new InetSocketAddress(MNCConsts.GUI_MANAGER_HOST, MNCConsts.GUI_MANAGER_PORT), 5000);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 new Thread(new ReceiveFromManager()).start();
                 connected = true;
