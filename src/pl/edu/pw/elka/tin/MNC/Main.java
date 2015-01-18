@@ -15,13 +15,12 @@ public class Main {
             String command;
             Scanner in = new Scanner(System.in);
             MNCSystemLog log = new MNCSystemLog(MNCDict.Langs.PL);
-            log.initialGroups(Arrays.copyOfRange(args, 1, args.length-1));
             MNCAddress.TYPE deviceType;
             if(args[0].equals("C"))
                 deviceType = MNCAddress.TYPE.CONTROLLER;
             else
                 deviceType = MNCAddress.TYPE.MONITOR;
-
+            log.initialGroups(Arrays.copyOfRange(args, 1, args.length));
             log.startNewDevice(deviceType);
             log.startGuiManager();
 
