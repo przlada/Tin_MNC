@@ -308,6 +308,11 @@ public class MNCSystemLog {
                 while(isRunning()){
                     try {
                         MNCControlEvent mncControlEvent = (MNCControlEvent) in.readObject();
+                        if(mncControlEvent == null) {
+                            device.closeDevice();
+                            stopWorking();
+                            break;
+                        }
                         receiveCommandFromManager(mncControlEvent);
                     } catch (IOException e) {
                         e.printStackTrace();
