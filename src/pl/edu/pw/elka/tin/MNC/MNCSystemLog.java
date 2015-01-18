@@ -177,6 +177,7 @@ public class MNCSystemLog {
     }
 
     public void informGuiManagerTokensChange(){
+        print("Wyslano liste tokenow");
         if(device instanceof MNCController) {
             Set<String> tokenGroups = new HashSet<String>();
             for(String group : device.getGroups()){
