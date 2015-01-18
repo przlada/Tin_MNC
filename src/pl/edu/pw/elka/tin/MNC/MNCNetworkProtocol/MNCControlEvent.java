@@ -26,6 +26,9 @@ public class MNCControlEvent implements Serializable{
         RemoveDeviceFromTokenList,
         //Komendy od gui managera
         Command,
+        //Logig specjalne
+        ControllerStarted,
+        ControllerStoped,
         //Dane specjalne dla GuiManagera
         Start,
         MyGroups,

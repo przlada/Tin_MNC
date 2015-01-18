@@ -23,6 +23,7 @@ public class MNCDict {
         Hashtable<String, String> PLDict = new Hashtable<String, String>();
         PLDict.put("MNCName", "System komunikacji rozgłoszeniowej dla grup sterowników");
         PLDict.put("ControllerStarted", "Uruchomiono sterownik MNC:");
+        PLDict.put("ControllerStoped", "Wyłączono sterownik MNC:");
         PLDict.put("NoNameController", "brak nazwy");
         PLDict.put("HaveNewTokenOwner", "Ustalono adres sterownika z tokenem grupy:");
         PLDict.put("SendByMulticast", "Wyslano MCAST:");

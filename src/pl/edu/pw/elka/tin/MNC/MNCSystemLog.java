@@ -73,6 +73,7 @@ public class MNCSystemLog {
             deviceType = type;
             try {
                 device = new MNCController(deviceType.toString(), deviceAddress, this);
+                guiManager.sendToManager(new MNCControlEvent(TYPE.ControllerStarted, getLangText(lang,"ControllerStarted")));
                 for(String group: initialGroups) {
                     System.out.println("dodano "+group);
                     device.addGroup(group);
@@ -89,6 +90,7 @@ public class MNCSystemLog {
         if(device != null){
             device.closeDevice();
             device = null;
+            guiManager.sendToManager(new MNCControlEvent(TYPE.ControllerStoped, getLangText(lang,"ControllerStoped")));
         }
     }
 
