@@ -182,7 +182,7 @@ public class MNCController extends MNCDevice {
     protected synchronized void checkTokenOwners(){
         log.actionTokenOwnerAssignment();
         for (String group : myGroups) {
-            if(!tokensOwners.contains(group) && !tokenOwnerGetters.containsKey(group)){
+            if(!tokensOwners.containsKey(group) && !tokenOwnerGetters.containsKey(group)){
                 MNCControllerTokenGetter tokenGetter = new MNCControllerTokenGetter(this, group);
                 tokenOwnerGetters.put(group, tokenGetter);
                 new Thread(tokenGetter, "tokenGeter:"+group).start();
