@@ -110,15 +110,19 @@ public class MNCSystemLog {
         print(type);
     }
 
+    //Akcje
     public void actionNewTokenOwner(String group){
         print(getLangText(lang,"HaveNewTokenOwner")+group+" "+device.getTokensOwners().get(group));
+        guiManager.sendToManager(new MNCControlEvent(TYPE.HaveNewTokenOwner, getLangText(lang,"HaveNewTokenOwner")+group+" "+device.getTokensOwners().get(group)));
     }
     public void actionReceiveUnicastDatagram(MNCDatagram datagram){
         print(getLangText(lang,"ReceiveFromUnicast")+datagram);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromUnicast, getLangText(lang,"ReceiveFromUnicast")+datagram));
     }
 
     public void actionSendUnicastDatagram(MNCDatagram datagram){
         print(getLangText(lang,"SendByUnicast")+datagram);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.SendByUnicast, getLangText(lang,"SendByUnicast")+datagram));
     }
 
     public void actionReceiveDatagram(MNCDatagram datagram){
@@ -129,55 +133,68 @@ public class MNCSystemLog {
 
     public void actionAddedNewDevice(String group, MNCAddress address){
         print(getLangText(lang,"AddedNewDeviceToGroup")+group+" "+address);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.AddedNewDeviceToGroup, getLangText(lang,"AddedNewDeviceToGroup")+group+" "+address));
     }
 
     public void actionDataAlreadyConsumed(MNCDatagram data){
         print(getLangText(lang,"DataAlreadyConsumed")+data);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.DataAlreadyConsumed, getLangText(lang,"DataAlreadyConsumed")+data));
     }
 
     public void actionDataReBroadcast(MNCDatagram data){
         print(getLangText(lang,"DataReBroadcast")+data);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.DataReBroadcast, getLangText(lang,"DataReBroadcast")+data));
     }
 
     public void actionReceivedToken(MNCToken token){
         print(getLangText(lang,"ReceivedToken")+token);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceivedToken, getLangText(lang,"ReceivedToken")+token));
     }
 
     public void actionSendDatagram(MNCDatagram datagram){
         print(getLangText(lang,"SendByMulticast")+datagram);
-        guiManager.sendToManager(new MNCControlEvent(TYPE.ReceiveFromMulticast, getLangText(lang,"SendByMulticast")+datagram));
+        guiManager.sendToManager(new MNCControlEvent(TYPE.SendByMulticast, getLangText(lang,"SendByMulticast")+datagram));
     }
 
     public void dataConsumption(MNCDeviceParameterSet set){
         print(getLangText(lang,"DataConsumption")+set.getGroup()+" "+set.getParameterSetID());
+        guiManager.sendToManager(new MNCControlEvent(TYPE.DataConsumption, getLangText(lang,"DataConsumption")+set.getGroup()+" "+set.getParameterSetID()));
     }
 
     public void actionSentDataBroadcastConfirm(){
         print(getLangText(lang,"SentDataBroadcastConfirm"));
+        guiManager.sendToManager(new MNCControlEvent(TYPE.SentDataBroadcastConfirm, getLangText(lang,"SentDataBroadcastConfirm")));
     }
 
     public void actionTokenOutOfReach(MNCAddress address){
         print(getLangText(lang,"TokenOutOfReach")+address);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.TokenOutOfReach, getLangText(lang,"TokenOutOfReach")+address));
     }
 
     public void actionTokenOwnerAssignment(){
         print(getLangText(lang,"TokenOwnerAssignment"));
+        guiManager.sendToManager(new MNCControlEvent(TYPE.TokenOwnerAssignment, getLangText(lang,"TokenOwnerAssignment")));
     }
 
     public void actionTokenTransfered(MNCAddress address){
         print(getLangText(lang,"TokenTransfered")+address);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.TokenTransfered, getLangText(lang,"TokenTransfered")+address));
     }
 
     public void actionTokenTransferError(MNCAddress address){
         print(getLangText(lang,"TokenTransferError")+address);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.TokenTransferError, getLangText(lang,"TokenTransferError")+address));
     }
 
     public void actionRemoveDeviceFromTokenList(MNCAddress address){
         print(getLangText(lang,"RemoveDeviceFromTokenList")+address);
+        guiManager.sendToManager(new MNCControlEvent(TYPE.RemoveDeviceFromTokenList, getLangText(lang,"RemoveDeviceFromTokenList")+address));
     }
 
+    //Koniec Akcji
+
+
     public void informGuiManagerTokensChange(){
-        print("Wyslano liste tokenow");
         if(device instanceof MNCController) {
             Set<String> tokenGroups = new HashSet<String>();
             for(String group : device.getGroups()){
@@ -186,6 +203,10 @@ public class MNCSystemLog {
             }
             guiManager.sendToManager(new MNCControlEvent(TYPE.MyTokens, null, tokenGroups.toArray(new String[tokenGroups.size()])));
         }
+    }
+
+    public void informGuiManagerGroupsChange(){
+        guiManager.sendToManager(new MNCControlEvent(TYPE.MyGroups, null, device.getGroups().toArray(new String[device.getGroups().size()])));
     }
 
     public void stopWorking(){

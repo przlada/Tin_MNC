@@ -66,6 +66,7 @@ public abstract class MNCDevice implements Serializable{
     public void addGroup(String group){
         myGroups.add(group);
         checkTokenOwners();
+        log.informGuiManagerGroupsChange();
     }
 
     public Hashtable<String, MNCAddress> getTokensOwners(){
@@ -78,6 +79,7 @@ public abstract class MNCDevice implements Serializable{
 
     public void removeGroup(String group){
         myGroups.remove(group);
+        log.informGuiManagerGroupsChange();
     }
 
     public abstract void receiveDatagram(MNCDatagram datagram);
