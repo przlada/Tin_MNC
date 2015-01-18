@@ -71,8 +71,10 @@ public class MNCSystemLog {
             deviceType = type;
             try {
                 device = new MNCController(deviceType.toString(), deviceAddress, this);
-                for(String group: initialGroups)
+                for(String group: initialGroups) {
+                    System.out.println("dodano "+group);
                     device.addGroup(group);
+                }
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {
