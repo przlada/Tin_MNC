@@ -50,8 +50,9 @@ public class MNCControlEvent implements Serializable{
         String text = "";
         if(type == TYPE.Command){
             text = "Command from Gui "+(String)data+" to group:";
-            for(String g : group)
-                text+=g+" ";
+            if(group != null)
+                for(String g : group)
+                    text+=g+" ";
         }
         return text;
     }
