@@ -3,6 +3,7 @@ package pl.edu.pw.elka.tin.MNC;
 import pl.edu.pw.elka.tin.MNC.MNCConstants.MNCConsts;
 import pl.edu.pw.elka.tin.MNC.MNCController.MNCController;
 import pl.edu.pw.elka.tin.MNC.MNCController.MNCDevice;
+import pl.edu.pw.elka.tin.MNC.MNCController.MNCMonitor;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCControlEvent;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDatagram;
 import pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCDeviceParameterSet;
@@ -22,7 +23,7 @@ import static pl.edu.pw.elka.tin.MNC.MNCNetworkProtocol.MNCControlEvent.TYPE;
 
 /**
  * Klasa odpowiedzialna za odbieranie i wyświetlanie wszelkich zdarzeń.
- * @author Paweł
+ * @author Maciek
  */
 public class MNCSystemLog {
     private Langs lang;
@@ -64,18 +65,27 @@ public class MNCSystemLog {
         return "";
     }
 
+    /**
+     * Uruchamianie nowego urządzenia.
+     *
+     * @param type  Typ uruchamianego urządzenia (Sterownik/Monitor)
+     */
     public void startNewDevice(MNCAddress.TYPE type){
         if(device == null){
+            deviceType = type;
+            //Adres uruchamianego urządzenia
             MNCAddress deviceAddress = new MNCAddress(getLocalAddress(), deviceType);
             controllerName = deviceAddress.toString();
-            deviceType = type;
             try {
-                device = new MNCController(deviceType.toString(), deviceAddress, this);
+                if(deviceType == MNCAddress.TYPE.CONTROLLER)
+                    device = new MNCController(deviceAddress.toString(), deviceAddress, this);
+                else
+                    device = new MNCMonitor(deviceAddress.toString(), deviceAddress, this);
+                //Wysyłamy do GuiManagera infromację o startcie kontrolera
                 guiManager.sendToManager(new MNCControlEvent(TYPE.ControllerStarted, getLangText(lang,"ControllerStarted")));
-                for(String group: initialGroups) {
-                    System.out.println("dodano "+group);
+                //Dodajemy urządzenie do zadanych grup
+                for(String group: initialGroups)
                     device.addGroup(group);
-                }
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {
@@ -84,10 +94,14 @@ public class MNCSystemLog {
         }
     }
 
+    /**
+     * Bespieczne zatrzymywanie urządzenia
+     */
     public void stopDevice(){
         if(device != null){
             device.closeDevice();
             device = null;
+            //Wysyłamy do GuiManagera infromację o zatrzymaniu urządzenia
             guiManager.sendToManager(new MNCControlEvent(TYPE.ControllerStoped, getLangText(lang,"ControllerStoped")));
         }
     }
@@ -100,6 +114,10 @@ public class MNCSystemLog {
         lang = l;
     }
 
+    /**
+     * Domyślne drukowanie logów
+     * @param text  Treść do wyświetlenia
+     */
     private void print(String text){
         System.out.println(controllerName+ " " + text);
     }
@@ -208,9 +226,14 @@ public class MNCSystemLog {
     }
 
     public void stopWorking(){
+        stopDevice();
         guiManager.setRunning(false);
     }
 
+    /**
+     * Odbieranie poleceń z GuiManagera
+     * @param command Komenda
+     */
     public synchronized void receiveCommandFromManager(MNCControlEvent command){
         print(command.toString());
         String cmd = (String)command.getData();
@@ -271,7 +294,7 @@ public class MNCSystemLog {
                 connected = true;
             } catch (IOException e) {
                 //e.printStackTrace();
-                System.out.println("Nie można nawiażać połączenia z managerem");
+                System.out.println("Nie można nawiązać połączenia z managerem");
             }
         }
         public synchronized void sendToManager(MNCControlEvent data){

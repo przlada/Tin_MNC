@@ -41,7 +41,7 @@ public class Main {
                     ((MNCController) log.getDevice()).transferToken(command);
                 }
                 else if(command.equals("quit") || command.equals("q")){
-                    log.stopDevice();
+                    log.stopWorking();
                     break;
                 }
                 else if(command.equals("stop")){
@@ -49,8 +49,6 @@ public class Main {
                 }
                 else if(command.equals("start")){
                     log.startNewDevice(deviceType);
-                    for (int i = 1; i < args.length; i++)
-                        log.getDevice().addGroup(args[i]);
                 }
             }
         }
