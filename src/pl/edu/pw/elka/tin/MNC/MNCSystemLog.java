@@ -198,9 +198,10 @@ public class MNCSystemLog {
     }
 
     public synchronized void startGuiManager(){
-        boolean isMonitor = deviceType == MNCAddress.TYPE.MONITOR;
+        Boolean isMonitor = deviceType == MNCAddress.TYPE.MONITOR;
         MNCControlEvent data = new MNCControlEvent(TYPE.Start, isMonitor, device.getGroups().toArray(new String[device.getGroups().size()]));
         data.setName(device.getMyAddress().toString());
+        System.out.println(data);
         guiManager.sendToManager(data);
     }
 
