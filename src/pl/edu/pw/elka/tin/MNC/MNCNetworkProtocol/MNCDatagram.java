@@ -74,13 +74,13 @@ public final class MNCDatagram implements Serializable {
         IS_THERE_TOKEN,
         I_HAVE_TMP_TOKEN,
         WHO_IN_GROUP,
+        IAM_IN_GROUP,
         I_HAVE_TOKEN,
         DATA_FRAGMENT,
+        CONSUMPTION_CONFIRMATION,
         //tcp
-        IAM_IN_GROUP,
         GET_TOKEN,
-        DATA_FULL,
-        CONSUMPTION_CONFIRMATION;
+        DATA_FULL;
 
         public static String getName(TYPE t){
             switch(t){
