@@ -284,6 +284,7 @@ public class MNCController extends MNCDevice {
                         int id = sendUnicastDatagram(data);
                         while (id <= 0) {
                             log.actionTokenOutOfReach(getTokensOwners().get(set.getGroup()));
+                            tokensOwners.remove(set.getGroup());
                             checkTokenOwners();
                             Thread.sleep(MNCConsts.WAIT_FOR_TOKEN_TIMEOUT + MNCConsts.WAIT_FOR_TMP_TOKEN + MNCConsts.WAIT_FOR_TMP_TOKEN);
                             data = new MNCDatagram(getMyAddress(), getTokensOwners().get(set.getGroup()), set.getGroup(), MNCDatagram.TYPE.DATA_FULL, set);
